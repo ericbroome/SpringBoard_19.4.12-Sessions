@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="border-container">
+    <h1>{% block home_header %}Survey Home{% endblock %}</h1>
+    <div id="container" class="border-container">
+        <p>
+            Select a survey. Answer each survey question only once. Answering the question will submit the answer immediately. Do not use the back button.
+        </p>
+            {% for survey in surveys%}
+                <a href="/?s={% print loop.index - 1 %}">{{survey.title}}</a><br/>
+            {% endfor %}
+
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

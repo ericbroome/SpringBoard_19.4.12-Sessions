@@ -1,0 +1,32 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding:0;
+    color: black;
+}
+
+html, body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    width: 100%;
+}
+
+.flash {
+    width:100%;
+    background-color:cornsilk;
+    border: .05rem dashed black;
+    padding: .5rem;
+    margin: .25rem;
+}
+
+.message {
+    background-color: beige;
+}
+
+
+
+.border-container {
+    border: 0.2rem solid black;
+    background-color: aliceblue;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}

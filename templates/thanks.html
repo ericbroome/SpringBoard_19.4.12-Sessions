@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="border-container">
+    <h1>{% block home_header %}Thanks{% endblock %}</h1>
+    <div id="container" class="border-container">
+        <p>
+            Thank you for completing the survey.
+            <a href="/reset">Home</a><br/>
+        </p>
+    </div>
+</div>
+{% endblock %}
