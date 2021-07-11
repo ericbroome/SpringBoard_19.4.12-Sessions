@@ -11,24 +11,38 @@
         {% endif %}
     {% endwith %}
     <div class="border-container"><h1>{{question.question}}</h1><div>
-        <form name="answerForm" action="/answer" method="POST">
+        <form name="answerForm" id="answerForm" action="/answer" method="POST">
+            <input type="hidden" name="question" value="{{question.question}}">
             {% with choices = question.choices %}
                 {% if choices %}
                     <div class="flash">
-                    {% for choice in choices %}
-                        <p><input type="radio" name="answer" value={{choice}}>{{choice}}</p>
-                    {% endfor %}
+                        {% for choice in choices %}
+                            <p><input type="radio" name="answer" id="answer_{% print loop.index %}" value="{{choice}}">{{choice}}</p>
+                        {% endfor %}
+                        {% if question.allow_text == true %}
+                            <p><input type="text" name="answer_text" id="answer_text" placeholder="Answer Text" value=""></p>
+                        {% else %}
+                            <input type="hidden" name="answer_text" id="answer_text" value="">
+                        {% endif %}
+                        <p><input type="text" name="comment" id="comment" placeholder="Comment" value=""></p>
+                        <p><button type="submit">Submit</button>
                     </div>
                 {% endif %}
             {% endwith %}
          </form>
     </div>
-    <script>
-        answerItems = document.querySelectorAll('input[name="answer"]');
-        for(answerItem of answerItems) {
-            answerItem.addEventListener("click", (event) => {
-                document.forms['answerForm'].submit();
-            })
-        }
+    <script type="text/javascript">
+        document.getElementById("answerForm").addEventListener("submit", (event) => {
+            whichChecked = -1
+            radios = document.getElementsByName("answer");
+            for(radio of radios) {
+                if(radio.checked) whichChecked++;
+            }
+            if(whichChecked < 0) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        })
     </script>
 {% endblock %}

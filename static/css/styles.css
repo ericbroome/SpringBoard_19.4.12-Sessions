@@ -30,3 +30,8 @@ html, body {
     margin: 0.5rem;
     padding: 0.5rem;
 }
+
+.comment {
+    color: red;
+    font-style: italic;
+}

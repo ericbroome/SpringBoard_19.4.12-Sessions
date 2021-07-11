@@ -4,17 +4,21 @@
 
 <div class="border-container">
     <h1>{% block home_header %}Survey Home{% endblock %}</h1>
+    <p>
+        Select a survey. Answer each survey question only once. Answering the question will submit the answer immediately. Do not use the back button.
+    </p>
     <div id="container" class="border-container">
-        <p>
-            Select a survey. Answer each survey question only once. Answering the question will submit the answer immediately. Do not use the back button.
-        </p>
-            {% for survey in surveys%}
-                <a href="/?s={% print loop.index - 1 %}">{{survey.title}}</a><br/>
+            {% for key, value in surveys.items() %}
+                <div>
+                    <a href="/?s={{ key }}">{{value.title}}</a><hr/>
+                </div>
             {% endfor %}
 
         </form>
     </div>
 </div>
+<script>
 
+</script>
 
 {% endblock %}

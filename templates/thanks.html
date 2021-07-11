@@ -6,6 +6,10 @@
         <p>
             Thank you for completing the survey.
             <a href="/reset">Home</a><br/>
+            <hr>
+            {% for response in responses %}
+                <div>{{response.question}} -> {{response.answer}} {{response.answer_text}} <span class="comment">{{response.comment}}</span></div>
+            {% endfor %}
         </p>
     </div>
 </div>

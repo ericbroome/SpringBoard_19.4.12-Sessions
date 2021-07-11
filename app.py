@@ -1,6 +1,6 @@
 from flask import Flask, flash, request, session, render_template, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from surveys import Question, satisfaction_survey, personality_quiz
+from surveys import Question, satisfaction_survey, personality_quiz, surveys
 import pdb
 
 # In code, to set a breakpoint:
@@ -15,20 +15,17 @@ app.debug = True
 toolbar = DebugToolbarExtension(app)
 
 survey = None
-surveys = [satisfaction_survey, personality_quiz]
-responses = []
+#responses = []
 nextQuestion = -1
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "POST"])
 def do_home():
     """Display the home page"""
     global survey, nextQuestion
-    s = request.args.get('s', '')
-    if(s == '0' or s == '1'):
-        # We have selected the satisfaction survey
-        survey = surveys[int(s)]
-        print(s)
-#        pdb.set_trace()
+    s = request.args.get('s', None)
+    session['responses'] = []
+    if(s != None):
+        survey = surveys[s]
         nextQuestion = 0
         return redirect(f"questions/{nextQuestion}", 307)
     return render_template("home.html", surveys=surveys)
@@ -37,7 +34,6 @@ def do_home():
 def do_questions(index):
     """Handle survey question"""
     global nextQuestion
-    global responses
     if(index >= len(survey.questions) or index < 0):
         #DO SOMETHING ABOUT INDEX OUT OF RANGE
         flash("Question index is out of range. You must answer each question sequentially", category="warning")
@@ -49,24 +45,29 @@ def do_questions(index):
 @app.route("/answer", methods=["POST"])
 def do_answer():
     """Accept or reject an answer and proceed to next question"""
-    global nextQuestion, responses
+    global nextQuestion
     answer = request.form['answer']
-    responses.append(answer)
+    answer_text = request.form['answer_text']
+    comment = request.form['comment']
+    question = request.form['question']
+    responses = session['responses']
+    responses.append({"question":question, "answer":answer, "answer_text":answer_text, "comment":comment})
+    session['responses'] = responses
     nextQuestion += 1
     if nextQuestion >= len(survey.questions):
         return redirect("/thanks")
     return redirect(f"/questions/{nextQuestion}")
 
-@app.route("/reset")
+@app.route("/reset", methods=["GET", "POST"])
 def do_reset():
     """ Reset the survey data to start over """
-    global responses, nextQuestion, survey
-    session['responses'] = responses = []
+    global nextQuestion, survey
+    session['responses'] = []
     nextQuestion = 0
-    return redirect("/")
+    survey = None
+    return redirect("/", 307)   #307 avoids conversion of POST to GET, thus the post data will still be there for "/" to redirect to the proper survey
 
 @app.route("/thanks")
 def do_thanks():
     """Thank the user for participating and show results"""
-    results = {"survey":survey, "responses":responses}
-    return render_template("thanks.html", results=results)
+    return render_template("thanks.html", responses=session['responses'])
